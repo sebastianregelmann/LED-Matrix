@@ -2,15 +2,15 @@
     "Enabled": true,
     "Brightness": 232,
     "ImageMode": {
-        "Enabled": false,
-        "Image": "LastImageName.png"
+        "Enabled": true,
+        "Image": "Test.png"
     },
     "GifMode": {
         "Enabled": false,
-        "Gif": "LastGifName.gif"
+        "Gif": "Test.gif"
     },
     "AnimationMode": {
-        "Enabled": true,
+        "Enabled": false,
         "Mode": "FIRE",
         "AnimationSettings": {
             "ColorFade": true,

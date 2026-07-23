@@ -5,6 +5,7 @@ import threading
 from Animator import AnimationMode, AnimationSettings, Animator, Rain, Fire, Plasma, LavaLamp, DriftingFog, Starfield, SlowClock
 import time
 import os
+from ImageLoader import load_animator_missing
 
 class AnimationImageDriver(ImageDriver):
     animation_mode : AnimationMode
@@ -22,7 +23,6 @@ class AnimationImageDriver(ImageDriver):
         #call super constructor
         super().__init__()
 
-        #convert name into path
         self.animation_mode = animation_mode
         self.animation_settings = animation_settings
         self.animator = None
@@ -34,10 +34,7 @@ class AnimationImageDriver(ImageDriver):
             with self.lock:
                 match self.animation_mode:
                     case AnimationMode.NONE:
-                        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ErrorImages", "Animations", "AnimatorNotFound.png")
-                        img = Image.open(path)
-                        img = np.array(img, dtype=np.uint8)
-                        img = self.ensure_rgba(img)
+                        img = load_animator_missing()
                         self.current_frame = img
                         self.animator = None
                         print(f"[ANIMATION IMAGE DRIVER] Animator not found")

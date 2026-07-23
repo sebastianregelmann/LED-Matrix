@@ -16,6 +16,7 @@ cd ~/rpi-rgb-led-matrix
 source /home/pi/LED-Matrix/venv/bin/activate
 pip install .
 
+
 3. dtparam=audio=off disable audio in /boot/firmware/config.txt
 sudo nano /etc/modprobe.d/alsa-blacklist.conf
 blacklist snd_bcm2835

@@ -5,6 +5,7 @@ from PIL import Image, ImageSequence
 from ImageDriver import ImageDriver
 import threading
 import os
+from ImageLoader import load_gif_missing
 
 class GifImageDriver(ImageDriver): 
     frame_thread : threading.Thread
@@ -35,10 +36,9 @@ class GifImageDriver(ImageDriver):
     def load_gif_frames(self) -> bool: 
         try:
             #check if path is valid
+            #TODO Fix path issues
             if os.path.exists(self.gif_path) == False:
-                path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ErrorImages", "GIFS", "GifNotFound.png")
-                img = Image.open(path)
-                img = np.array(img, dtype=np.uint8)
+                img = load_gif_missing()
                 img = self.ensure_rgba(img)
                 with self.lock:
                     self.current_frame = img

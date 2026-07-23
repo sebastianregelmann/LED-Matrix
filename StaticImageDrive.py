@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 from ImageDriver import ImageDriver
 import os 
-
+from ImageLoader import load_image_missing
 
 class StaticImageDriver(ImageDriver):
     image_name : str 
@@ -22,10 +22,8 @@ class StaticImageDriver(ImageDriver):
     def load_image(self):
         try:
             #check if path is valid
-            if self.image_path.exists() == False:
-                path =  os.path.join(os.path.dirname(os.path.abspath(__file__)), "ErrorImages", "StaticImage", "ImageNotFound.png")
-                img = Image.open(path)
-                img = np.array(img, dtype=np.uint8)
+            if os.path.exists(self.image_path) == False:
+                img = load_image_missing()
                 img = self.ensure_rgba(img)
                 self.current_frame = img
                 print(f"[STATIC IMAGE DRIVER] No Image at Path: {self.image_path}")

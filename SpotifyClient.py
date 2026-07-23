@@ -10,7 +10,7 @@ from PIL import Image
 from io import BytesIO
 import threading
 import os
-
+from ImageLoader import load_spotify_missing_api_key, load_spotify_invalid_refresh_token, load_spotify_request_failure, load_spotify_icon, load_spotify_unknown_error
 
 @dataclass
 class APIKeys:
@@ -393,8 +393,8 @@ class Client():
             bg[..., 3] = 255
             return bg
 
-        self.spotify_icon = load_img("SpotifyIcon.png")
-        self.unknown_error = load_img("UnknownError.png")
-        self.no_api_keys_image = load_img("APIKeysNotFound.png")
-        self.refresh_token_invalid = load_img("RefreshTokenInvalid.png")
-        self.request_failure = load_img("RequestFailure.png")
+        self.spotify_icon = load_spotify_icon()
+        self.unknown_error = load_spotify_unknown_error()
+        self.no_api_keys_image = load_spotify_missing_api_key
+        self.refresh_token_invalid = load_spotify_invalid_refresh_token()
+        self.request_failure = load_spotify_request_failure()
