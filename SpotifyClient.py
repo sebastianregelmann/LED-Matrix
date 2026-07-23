@@ -9,6 +9,8 @@ import numpy as np
 from PIL import Image
 from io import BytesIO
 import threading
+import os
+
 
 @dataclass
 class APIKeys:
@@ -187,8 +189,8 @@ class Client():
         print("[SPOTIFY CLIENT] Request Thread Stopped")
 
     def load_tokens(self):
-        token_path = Path("SpotifyTokens/TokenCache.json")
-        if not token_path.exists():
+        token_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "SpotifyTokens", "TokenCache.json")
+        if os.path.exists(token_path) == False:
             print("[SPOTIFY CLIENT] TokenCache.json not found.")
             self.tokens = None
             return
@@ -220,18 +222,14 @@ class Client():
             "TimeStamp": self.tokens.time_stamp.strftime("%Y-%m-%d %H:%M:%S") if self.tokens.time_stamp else "",
             "AliveTime": self.tokens.alive_time
         }
+
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "SpotifyTokens")
+        os.makedirs(path, exist_ok=True)
         
-        folder = Path("SpotifyTokens")
-        folder.mkdir(parents=True, exist_ok=True)
+        target_file = os.path.join(path, "TokenCache.json")
         
-        # Safe atomic write to prevent corruption on sudden shutdowns
-        temp_file = folder / "TokenCache.json.tmp"
-        target_file = folder / "TokenCache.json"
-        
-        with open(temp_file, 'w', encoding='utf-8') as file:
+        with open(target_file, 'w', encoding='utf-8') as file:
             json.dump(data, file, indent=4)
-        
-        temp_file.replace(target_file)
 
     def handle_refresh_access_token_response(self, response: requests.Response):
         try:
@@ -381,17 +379,22 @@ class Client():
 
     def load_error_images(self):
         def load_img(path: str) -> np.ndarray:
-            p = Path(path)
-            if p.exists():
-                img = Image.open(p).convert("RGBA").resize((64, 64), Image.Resampling.LANCZOS)
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            # Construct a clean, absolute string path directly
+            file_path = os.path.join(current_dir, "ErrorImages", "Spotify", path)
+            
+            # Use os.path instead of pathlib to avoid proxy exceptions
+            if os.path.exists(file_path):
+                img = Image.open(file_path).convert("RGBA").resize((64, 64), Image.Resampling.LANCZOS)
                 return np.array(img)
-            # Fallback black canvas if image files are missing
+            
+            # Fallback black canvas if missing
             bg = np.zeros((64, 64, 4), dtype=np.uint8)
             bg[..., 3] = 255
             return bg
 
-        self.spotify_icon = load_img("ErrorImages/Spotify/SpotifyIcon.png")
-        self.unknown_error = load_img("ErrorImages/Spotify/UnknownError.png")
-        self.no_api_keys_image = load_img("ErrorImages/Spotify/APIKeysNotFound.png")
-        self.refresh_token_invalid = load_img("ErrorImages/Spotify/RefreshTokenInvalid.png")
-        self.request_failure = load_img("ErrorImages/Spotify/RequestFailure.png")
+        self.spotify_icon = load_img("SpotifyIcon.png")
+        self.unknown_error = load_img("UnknownError.png")
+        self.no_api_keys_image = load_img("APIKeysNotFound.png")
+        self.refresh_token_invalid = load_img("RefreshTokenInvalid.png")
+        self.request_failure = load_img("RequestFailure.png")

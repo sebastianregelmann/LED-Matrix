@@ -2,6 +2,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 from ImageDriver import ImageDriver
+import os 
+
 
 class StaticImageDriver(ImageDriver):
     image_name : str 
@@ -13,7 +15,7 @@ class StaticImageDriver(ImageDriver):
 
         #convert name into path
         self.image_name = image_name
-        self.image_path = Path(f"IMAGES/{image_name}")
+        self.image_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "IMAGES", image_name)
 
 
 
@@ -21,7 +23,8 @@ class StaticImageDriver(ImageDriver):
         try:
             #check if path is valid
             if self.image_path.exists() == False:
-                img = Image.open('ErrorImages/StaticImage/ImageNotFound.png')
+                path =  os.path.join(os.path.dirname(os.path.abspath(__file__)), "ErrorImages", "StaticImage", "ImageNotFound.png")
+                img = Image.open(path)
                 img = np.array(img, dtype=np.uint8)
                 img = self.ensure_rgba(img)
                 self.current_frame = img

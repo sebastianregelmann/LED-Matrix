@@ -58,7 +58,15 @@ query = urllib.parse.urlencode(
 )
         
 auth_url = f"https://accounts.spotify.com/authorize?{query}"
-webbrowser.open(auth_url)
+
+# Print the URL
+print("\n" + "="*60)
+print("ACTION REQUIRED:")
+print("Please copy and paste this URL into your PC's web browser:")
+print(auth_url)
+print("="*60 + "\n")
+
+print(f"Starting Redirect Server on {cb_host}:{cb_port}{cb_path} ...")
 
 print(f"Starting Redirect Server on {cb_host}:{cb_port}{cb_path} ...")
 handler = CallbackHandler(cb_host, cb_port, cb_path)

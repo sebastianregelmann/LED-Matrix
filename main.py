@@ -30,7 +30,7 @@ def run_server(frame_driver: FrameDriver, port=8000):
 
 
 if __name__ == "__main__":
-    led_driver = LEDMatrixDriver(127)
+    #led_driver = LEDMatrixDriver(127)
     frame_driver = FrameDriver()
 
     #Start HTTP Server

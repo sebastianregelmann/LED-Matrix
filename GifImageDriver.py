@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image, ImageSequence
 from ImageDriver import ImageDriver
 import threading
+import os
 
 class GifImageDriver(ImageDriver): 
     frame_thread : threading.Thread
@@ -28,14 +29,15 @@ class GifImageDriver(ImageDriver):
 
         #convert name into path
         self.gif_name = gif_name
-        self.gif_path = Path(f"GIFS/{gif_name}")
+        self.gif_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GIFS", gif_name)
 
 
     def load_gif_frames(self) -> bool: 
         try:
             #check if path is valid
-            if self.gif_path.exists() == False:
-                img = Image.open("ErrorImages/GIFS/GifNotFound.png")
+            if os.path.exists(self.gif_path) == False:
+                path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ErrorImages", "GIFS", "GifNotFound.png")
+                img = Image.open(path)
                 img = np.array(img, dtype=np.uint8)
                 img = self.ensure_rgba(img)
                 with self.lock:
@@ -156,7 +158,7 @@ class GifImageDriver(ImageDriver):
         
         #convert name into path
         self.gif_name = new_gif
-        self.gif_path = Path(f"GIFS/{new_gif}")
+        self.gif_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GIFS", new_gif)
 
         self.start_image_driver()
 

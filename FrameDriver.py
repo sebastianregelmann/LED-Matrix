@@ -8,6 +8,7 @@ import json
 import time
 import threading
 from LEDMatrixDriver import LEDMatrixDriver
+import os
 
 
 class FrameDriver():
@@ -87,9 +88,10 @@ class FrameDriver():
         self.spotify_image_driver = SpotifyImageDriver(2, DisplayMode.DISC)
 
     def load_cached_settings(self) -> bool:
-        path = Path("StatusCache/Status.json")
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(current_dir, "StatusCache", "Status.json")
 
-        if not path.exists():
+        if os.path.exists(path) == False:
             return False
 
         with open(path, 'r', encoding='utf-8') as file:
@@ -316,9 +318,12 @@ class FrameDriver():
 
     def _save_status_cache_unlocked(self):
         """Helper to write cache when lock is already acquired."""
-        folder = Path("StatusCache")
-        folder.mkdir(parents=True, exist_ok=True)
-        file_path = folder / "Status.json"
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        folder = os.path.join(current_dir, "StatusCache")
+
+        # Use makedirs instead of mkdir to safely support exist_ok=True
+        os.makedirs(folder, exist_ok=True)
+        file_path = os.path.join(folder, "Status.json")
 
         status_data = self._build_status_dict()
 

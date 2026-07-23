@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 import random
 import cv2
 from enum import Enum
+import os
 
 class AnimationMode(Enum):
     NONE = 1,
@@ -516,7 +517,8 @@ class SlowClock(Animator):
         super().__init__(animation_settings)
 
         # Load the font
-        self.font = ImageFont.truetype("Fonts/Sono-VariableFont_MONO,wght.ttf", size=20)
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Fonts", "Sono-VariableFont_MONO,wght.ttf")
+        self.font = ImageFont.truetype(path, size=20)
 
 
     def draw_centered_text(self, draw:ImageDraw.Draw, text:str, rect:tuple):

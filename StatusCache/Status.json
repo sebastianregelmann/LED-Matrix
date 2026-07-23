@@ -11,7 +11,7 @@
     },
     "AnimationMode": {
         "Enabled": true,
-        "Mode": "NONE",
+        "Mode": "FIRE",
         "AnimationSettings": {
             "ColorFade": true,
             "Red": 14,

@@ -4,7 +4,7 @@ from ImageDriver import ImageDriver
 import threading
 from Animator import AnimationMode, AnimationSettings, Animator, Rain, Fire, Plasma, LavaLamp, DriftingFog, Starfield, SlowClock
 import time
-
+import os
 
 class AnimationImageDriver(ImageDriver):
     animation_mode : AnimationMode
@@ -34,7 +34,8 @@ class AnimationImageDriver(ImageDriver):
             with self.lock:
                 match self.animation_mode:
                     case AnimationMode.NONE:
-                        img = Image.open('ErrorImages/Animation/AnimatorNotFound.png')
+                        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ErrorImages", "Animations", "AnimatorNotFound.png")
+                        img = Image.open(path)
                         img = np.array(img, dtype=np.uint8)
                         img = self.ensure_rgba(img)
                         self.current_frame = img
