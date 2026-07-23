@@ -1,0 +1,28 @@
+{
+    "Enabled": true,
+    "Brightness": 232,
+    "ImageMode": {
+        "Enabled": false,
+        "Image": "LastImageName.png"
+    },
+    "GifMode": {
+        "Enabled": false,
+        "Gif": "LastGifName.gif"
+    },
+    "AnimationMode": {
+        "Enabled": true,
+        "Mode": "NONE",
+        "AnimationSettings": {
+            "ColorFade": true,
+            "Red": 14,
+            "Green": 32,
+            "Blue": 104,
+            "AnimationSpeed": 0.36,
+            "ColorFadeSpeed": 0.00864
+        }
+    },
+    "SpotifyMode": {
+        "Enabled": false,
+        "Mode": "DISC_TIME"
+    }
+}

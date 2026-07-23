@@ -1,0 +1,5 @@
+{
+    "ClientID": "Your Client ID",
+    "ClientSecret": "Your Client Secret",
+    "RedirecteURL": "http://127.0.0.1:8888/callback"
+}
