@@ -23,8 +23,11 @@ class FrameDriver():
 
     led_driver: LEDMatrixDriver
 
-    def __init__(self):
+    save_status_to_cache: bool
+
+    def __init__(self, save_status_to_cache:bool = False):
         self.lock = threading.Lock()
+        self.save_status_to_cache = save_status_to_cache
 
         # load the last cached settings
         if not self.load_cached_settings():
@@ -322,6 +325,10 @@ class FrameDriver():
             return self._build_status_dict()
 
     def _save_status_cache_unlocked(self):
+        #Exit if Saving Status is not wanted
+        if self.save_status_to_cache == False:
+            return
+        
         try: 
             """Helper to write cache when lock is already acquired."""
 

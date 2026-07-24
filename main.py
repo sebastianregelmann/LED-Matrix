@@ -3,6 +3,8 @@ from http.server import ThreadingHTTPServer
 from LEDMatrixServer import SimpleHandler
 import threading
 import time
+import argparse
+
 #import cv2 
 
 
@@ -30,8 +32,23 @@ def run_server(frame_driver: FrameDriver, port=8000):
 
 
 if __name__ == "__main__":
+    #check if frame driver should save status
+    # 1. Initialize parser
+    parser = argparse.ArgumentParser()
+
+    # 2. Add the flag (action="store_true" means if it's present, it's True; otherwise, False)
+    parser.add_argument("--save-status", action="store_true", help="Enable status saving")
+
+    # 3. Parse arguments
+    args = parser.parse_args()
+
+    save_status = False
+    # 4. Check the flag
+    if args.save_status:
+        save_status = True
+
     #led_driver = LEDMatrixDriver(127)
-    frame_driver = FrameDriver()
+    frame_driver = FrameDriver(save_status)
 
     #Start HTTP Server
     server_thread = threading.Thread(target=run_server, args=(frame_driver, 8000), daemon=True)
