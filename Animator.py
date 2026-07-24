@@ -522,8 +522,9 @@ class SlowClock(Animator):
                 self.font = ImageFont.truetype(path, size=20)
             else:
                 self.font = ImageFont.load_default(20)
-        except Exception:
+        except Exception as e:
             self.font = ImageFont.load_default(20)
+            print(f"[CLOCK ANIMATOR] Could not load {get_abs_path("Fonts/Sono-VariableFont_MONO,wght.ttf")} Error: {e}")
 
 
     def draw_centered_text(self, draw:ImageDraw.Draw, text:str, rect:tuple):

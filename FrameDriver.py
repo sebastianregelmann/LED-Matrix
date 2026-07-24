@@ -8,7 +8,7 @@ import time
 import threading
 from LEDMatrixDriver import LEDMatrixDriver
 import os
-
+from ImageLoader import get_abs_path, path_exists
 
 class FrameDriver():
     current_image_driver: ImageDriver = None
@@ -30,6 +30,7 @@ class FrameDriver():
         if not self.load_cached_settings():
             self.initialize_default()
 
+        print("[FRAME DRIVER] Frame driver is Ready")
         self.save_status_cache()
 
         thread = threading.Thread(target=self.update_loop, daemon=True)
@@ -39,6 +40,7 @@ class FrameDriver():
         update_rate = 1 / 90  # ~0.01333 seconds (13.3ms)
         last_update = time.perf_counter()
 
+        print["[FRAME DRIVER] Starting Matrix Update Loop Now"]
         while True:
             try:
                 # 1. Check if mode changed
@@ -85,14 +87,14 @@ class FrameDriver():
             AnimationMode.NONE, AnimationSettings(False, 255, 0, 0, 0.5, 0.001)
         )
         self.spotify_image_driver = SpotifyImageDriver(2, DisplayMode.DISC)
+        print("[FRAME DRIVER] Initialied with default Settings")
 
     def load_cached_settings(self) -> bool:
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(current_dir, "StatusCache", "Status.json")
-
-        if os.path.exists(path) == False:
+        if path_exists(os.path.join("StatusCache", "Status.json")) == False:
+            print(f"[FRAME DRIVER] Path does not exist: {get_abs_path(os.path.join("StatusCache", "Status.json"))}")
             return False
-
+        
+        path = get_abs_path(os.path.join("StatusCache", "Status.json"))
         with open(path, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
@@ -122,6 +124,7 @@ class FrameDriver():
             spotify_mode = self.decode_spotify_mode(data.get("SpotifyMode", {}).get("Mode", "DISC"))
             self.spotify_image_driver = SpotifyImageDriver(2, spotify_mode)
 
+            print(f"[FRAME DRIVER] Loaded Status from: {path}")
             return True
 
     def decode_animation_mode(self, mode: str) -> AnimationMode:
@@ -146,6 +149,7 @@ class FrameDriver():
         with self.lock:
             self.new_mode = request
             self.change_mode = True
+        print("[FRAME DRIVER] Received Mode Change Request")
 
     def stop_current_image_driver(self):
         if self.current_image_driver is not None:
@@ -154,6 +158,7 @@ class FrameDriver():
 
     def change_mode_after_request(self, new_mode: dict):
         # Lock during driver reconfiguration to prevent race conditions
+        print("[FRAME DRIVER] Handling Mode Change Request now ...")
         with self.lock:
             data = new_mode
 
@@ -192,6 +197,7 @@ class FrameDriver():
             spotify_mode = self.decode_spotify_mode(data.get("SpotifyMode", {}).get("Mode", "DISC"))
             self.change_spotify_mode(spotify_enabled, spotify_mode)
 
+            print("[FRAME DRIVER] Handled Mode Change Request")
             self._save_status_cache_unlocked()
 
     def change_led_matrix_settings(self, enabled: bool, brightness: int):
@@ -316,18 +322,22 @@ class FrameDriver():
             return self._build_status_dict()
 
     def _save_status_cache_unlocked(self):
-        """Helper to write cache when lock is already acquired."""
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        folder = os.path.join(current_dir, "StatusCache")
+        try: 
+            """Helper to write cache when lock is already acquired."""
 
-        # Use makedirs instead of mkdir to safely support exist_ok=True
-        os.makedirs(folder, exist_ok=True)
-        file_path = os.path.join(folder, "Status.json")
+            folder = get_abs_path("StatusCache")
+            # Use makedirs instead of mkdir to safely support exist_ok=True
+            os.makedirs(folder, exist_ok=True)
+            file_path = get_abs_path(os.path.join("StatusCache", "Status.json"))
 
-        status_data = self._build_status_dict()
+            status_data = self._build_status_dict()
 
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(status_data, f, indent=4)
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(status_data, f, indent=4)
+
+            print(f"[FRAME DRIVER] Saved Status to: {file_path}")
+        except Exception as e:
+            print(f"[FRAME DRIVER] Could not save token cache to: {get_abs_path(os.path.join("StatusCache", "Status.json"))} Error: {e}")
 
     def save_status_cache(self):
         """Public method for cache saving."""

@@ -10,10 +10,10 @@
         "Gif": "Test.gif"
     },
     "AnimationMode": {
-        "Enabled": false,
-        "Mode": "FIRE",
+        "Enabled": true,
+        "Mode": "CLOCK",
         "AnimationSettings": {
-            "ColorFade": true,
+            "ColorFade": false,
             "Red": 14,
             "Green": 32,
             "Blue": 104,
@@ -22,7 +22,7 @@
         }
     },
     "SpotifyMode": {
-        "Enabled": true,
+        "Enabled": false,
         "Mode": "DISC_TIME"
     }
 }
