@@ -1,6 +1,6 @@
 {
-    "Enabled": true,
-    "Brightness": 255,
+    "Enabled": false,
+    "Brightness": 127,
     "ImageMode": {
         "Enabled": false,
         "Image": "Test.png"
@@ -10,19 +10,19 @@
         "Gif": "Test.gif"
     },
     "AnimationMode": {
-        "Enabled": true,
-        "Mode": "STARFIELD",
+        "Enabled": false,
+        "Mode": "NONE",
         "AnimationSettings": {
-            "ColorFade": true,
-            "Red": 220,
-            "Green": 110,
-            "Blue": 10,
-            "AnimationSpeed": 0.6,
+            "ColorFade": false,
+            "Red": 255,
+            "Green": 0,
+            "Blue": 0,
+            "AnimationSpeed": 0.5,
             "ColorFadeSpeed": 0.001
         }
     },
     "SpotifyMode": {
         "Enabled": false,
-        "Mode": "DISC_TIME"
+        "Mode": "DISC"
     }
 }
