@@ -30,9 +30,11 @@ class FrameDriver():
         self.save_status_to_cache = save_status_to_cache
 
         # load the last cached settings
-        if not self.load_cached_settings():
+        if self.save_status_to_cache:
+            if not self.load_cached_settings():
+                self.initialize_default()
+        else:
             self.initialize_default()
-
         print("[FRAME DRIVER] Frame driver is Ready")
         self.save_status_cache()
 
