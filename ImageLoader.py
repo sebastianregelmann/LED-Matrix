@@ -19,7 +19,7 @@ def load_image( path:str) -> np.ndarray:
     abs_path = os.path.join(ABSOLUTE_PATH, path)
     if os.path.exists(abs_path):
         img = Image.open(abs_path).convert("RGBA").resize((64, 64), Image.Resampling.LANCZOS)
-        return np.array(img).dtype(np.uint8)
+        return np.array(img).astype(np.uint8)
 
 
 def load_animator_missing() -> np.ndarray:
