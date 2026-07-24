@@ -1,6 +1,6 @@
 {
     "Enabled": true,
-    "Brightness": 232,
+    "Brightness": 255,
     "ImageMode": {
         "Enabled": false,
         "Image": "Test.png"
@@ -11,14 +11,14 @@
     },
     "AnimationMode": {
         "Enabled": true,
-        "Mode": "CLOCK",
+        "Mode": "STARFIELD",
         "AnimationSettings": {
-            "ColorFade": false,
-            "Red": 14,
-            "Green": 32,
-            "Blue": 104,
-            "AnimationSpeed": 0.36,
-            "ColorFadeSpeed": 0.00864
+            "ColorFade": true,
+            "Red": 220,
+            "Green": 110,
+            "Blue": 10,
+            "AnimationSpeed": 0.6,
+            "ColorFadeSpeed": 0.001
         }
     },
     "SpotifyMode": {

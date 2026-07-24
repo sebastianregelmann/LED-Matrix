@@ -35,7 +35,7 @@ class LEDMatrixDriver():
         options.hardware_mapping = 'regular'
         
         # Prevent Pi 3 / Zero speed flickering
-        options.gpio_slowdown = 1 
+        options.gpio_slowdown = 2 
 
         self.matrix = RGBMatrix(options=options)
         self.matrix.brightness = self.brightness

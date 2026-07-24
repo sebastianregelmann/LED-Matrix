@@ -115,7 +115,7 @@ class Rain(Animator):
                 ]
             ) 
 
-        self.mask = emp
+        self.mask = empty_image()
 
 
     def get_next_frame(self) -> np.ndarray:
@@ -472,8 +472,9 @@ class Starfield(Animator):
     def get_next_frame(self):
         # Deep night background
         mask = empty_image()
-        lights = empty_image()
-
+        lights = np.zeros((64, 64, 4))
+        lights[..., 3] = 255
+        
         for i in range(self.num_stars):
             #check fade direction and fade brightness
             if self.brightness_direction[i] >= 1:
