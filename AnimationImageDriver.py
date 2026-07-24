@@ -1,11 +1,9 @@
 import numpy as np
-from PIL import Image
 from ImageDriver import ImageDriver
 import threading
 from Animator import AnimationMode, AnimationSettings, Animator, Rain, Fire, Plasma, LavaLamp, DriftingFog, Starfield, SlowClock
 import time
-import os
-from ImageLoader import load_animator_missing
+from ImageLoader import load_animator_missing, empty_image
 
 class AnimationImageDriver(ImageDriver):
     animation_mode : AnimationMode
@@ -28,6 +26,8 @@ class AnimationImageDriver(ImageDriver):
         self.animator = None
         self.lock = threading.Lock()
         self.stop_event = threading.Event()
+
+        print(f"[ANIMATION IMAGE DRIVER] Animator ready to start")
 
     def load_animator(self):
         try:
@@ -80,8 +80,7 @@ class AnimationImageDriver(ImageDriver):
         except Exception as e:
             print(f"[ANIMATION IMAGE DRIVER] Error in update Thread {e}")
             with self.lock:
-                self.current_frame = np.zeros((64,4,4), dtype=np.uint8)
-                self.current_frame[...,3] = 255
+                self.current_frame = empty_image()
         print("[ANIMATION IMAGE DRIVER] Stopped Frame Loop")
 
 
@@ -93,7 +92,6 @@ class AnimationImageDriver(ImageDriver):
         self.load_animator()
 
         if self.animator is None:
-            self.active = True
             return
         
         #set initial variables
@@ -102,8 +100,6 @@ class AnimationImageDriver(ImageDriver):
         #Start the thread
         self.stop_event.clear()
         self.frame_thread = threading.Thread(target=self.update_frame_loop)
-
-        self.active = True
         self.frame_thread.start()
 
     def stop_image_driver(self):
@@ -114,8 +110,6 @@ class AnimationImageDriver(ImageDriver):
             self.frame_thread.join()
         except Exception:
             pass
-
-        self.active = False
 
 
     def get_current_frame(self)->np.ndarray:

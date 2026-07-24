@@ -1,10 +1,10 @@
-from LEDMatrixDriver import LEDMatrixDriver
 from FrameDriver import FrameDriver
 from http.server import ThreadingHTTPServer
 from LEDMatrixServer import SimpleHandler
 import threading
-import cv2 
 import time
+#import cv2 
+
 
 # Thread to run the server
 def run_server(frame_driver: FrameDriver, port=8000):

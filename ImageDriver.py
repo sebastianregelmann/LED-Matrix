@@ -1,16 +1,13 @@
 import numpy as np
 from abc import ABC, abstractmethod
-
+from ImageLoader import empty_image
 
 class ImageDriver(ABC):
     current_frame: np.ndarray
-    active:bool
 
     def __init__(self):
         #initialize frame with empty array
-        self.current_frame = self.ensure_rgba(np.zeros((64,64,4), dtype=np.uint8))
-        self.active = False
-
+        self.current_frame = empty_image()
 
     @abstractmethod
     def get_current_frame(self) -> np.ndarray:
@@ -27,8 +24,7 @@ class ImageDriver(ABC):
         channels = img.shape[-1]
         
         # Create our output template (default alpha is 255)
-        result = np.zeros((64, 64, 4), dtype=np.uint8)
-        result[..., 3] = 255 
+        result =empty_image()
         
         match channels:
             case 1:  # Grayscale

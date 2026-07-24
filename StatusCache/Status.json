@@ -2,7 +2,7 @@
     "Enabled": true,
     "Brightness": 232,
     "ImageMode": {
-        "Enabled": true,
+        "Enabled": false,
         "Image": "Test.png"
     },
     "GifMode": {
@@ -22,7 +22,7 @@
         }
     },
     "SpotifyMode": {
-        "Enabled": false,
+        "Enabled": true,
         "Mode": "DISC_TIME"
     }
 }

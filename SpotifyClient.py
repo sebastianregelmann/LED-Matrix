@@ -1,5 +1,4 @@
 import requests
-from pathlib import Path
 from dataclasses import dataclass
 import time
 import json
@@ -9,8 +8,7 @@ import numpy as np
 from PIL import Image
 from io import BytesIO
 import threading
-import os
-from ImageLoader import load_spotify_missing_api_key, load_spotify_invalid_refresh_token, load_spotify_request_failure, load_spotify_icon, load_spotify_unknown_error
+from ImageLoader import load_spotify_missing_api_key, load_spotify_invalid_refresh_token, load_spotify_request_failure, load_spotify_icon, load_spotify_unknown_error, path_exists, get_abs_path, empty_image
 
 @dataclass
 class APIKeys:
@@ -57,8 +55,7 @@ class Client():
         self.load_tokens()
 
         # Create Startup Playback Info
-        background = np.zeros((64, 64, 4), dtype=np.uint8)
-        background[..., 3] = 255
+        background = empty_image()
         self.current_playback_info = PlaybackInfo("NotStarted", None, None, None, background)
         self.request_timeout = request_timeout
 
@@ -189,13 +186,13 @@ class Client():
         print("[SPOTIFY CLIENT] Request Thread Stopped")
 
     def load_tokens(self):
-        token_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "SpotifyTokens", "TokenCache.json")
-        if os.path.exists(token_path) == False:
+        if path_exists("SpotifyTokens/TokenCache.json") == False:
             print("[SPOTIFY CLIENT] TokenCache.json not found.")
             self.tokens = None
             return
 
         try:
+            token_path = get_abs_path("SpotifyTokens/TokenCache.json")
             with open(token_path, 'r', encoding='utf-8') as file:
                 data = json.load(file)
                 self.tokens = APIKeys(
@@ -206,6 +203,7 @@ class Client():
                     time_stamp=datetime.strptime(data["TimeStamp"], "%Y-%m-%d %H:%M:%S"),
                     alive_time=data["AliveTime"]
                 )
+            print(f"[SPOTIFY CLIENT] Loaded Token Chache")
         except Exception as e:
             print(f"[SPOTIFY CLIENT] Can't load API Keys: {e}")
             self.tokens = None
@@ -223,13 +221,14 @@ class Client():
             "AliveTime": self.tokens.alive_time
         }
 
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "SpotifyTokens")
-        os.makedirs(path, exist_ok=True)
-        
-        target_file = os.path.join(path, "TokenCache.json")
-        
-        with open(target_file, 'w', encoding='utf-8') as file:
-            json.dump(data, file, indent=4)
+        try:
+            path = get_abs_path("SpotifyTokens/TokenCache.json")
+            with open(path, 'w', encoding='utf-8') as file:
+                json.dump(data, file, indent=4)
+            print(f"[SPOTIFY CLIENT] Saved Token Cache")
+        except Exception as e:
+            print(f"[SPOTIFY CLIENT] Can't save Token Cache: {e}")
+
 
     def handle_refresh_access_token_response(self, response: requests.Response):
         try:
@@ -378,23 +377,19 @@ class Client():
 
 
     def load_error_images(self):
-        def load_img(path: str) -> np.ndarray:
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            # Construct a clean, absolute string path directly
-            file_path = os.path.join(current_dir, "ErrorImages", "Spotify", path)
+        try: 
+            self.spotify_icon = load_spotify_icon()
+            self.unknown_error = load_spotify_unknown_error()
+            self.no_api_keys_image = load_spotify_missing_api_key
+            self.refresh_token_invalid = load_spotify_invalid_refresh_token()
+            self.request_failure = load_spotify_request_failure()
+            print(f"[SPOTIFY CLIENT] Loaded Error Images")
+        except Exception as e:
+            self.spotify_icon = empty_image()
+            self.unknown_error = empty_image()
+            self.no_api_keys_image = empty_image()
+            self.refresh_token_invalid = empty_image()
+            self.request_failure = empty_image()                                        
+            print(f"[SPOTIFY CLIENT] Can't load Error Images: {e}")
             
-            # Use os.path instead of pathlib to avoid proxy exceptions
-            if os.path.exists(file_path):
-                img = Image.open(file_path).convert("RGBA").resize((64, 64), Image.Resampling.LANCZOS)
-                return np.array(img)
-            
-            # Fallback black canvas if missing
-            bg = np.zeros((64, 64, 4), dtype=np.uint8)
-            bg[..., 3] = 255
-            return bg
 
-        self.spotify_icon = load_spotify_icon()
-        self.unknown_error = load_spotify_unknown_error()
-        self.no_api_keys_image = load_spotify_missing_api_key
-        self.refresh_token_invalid = load_spotify_invalid_refresh_token()
-        self.request_failure = load_spotify_request_failure()

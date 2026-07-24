@@ -45,3 +45,29 @@ def load_spotify_icon () -> np.ndarray:
 
 def load_spotify_unknown_error () -> np.ndarray:
     return load_image(SPOTIFY_UNKNOWN_ERROR)
+
+
+def get_abs_path(path: str) -> str:
+    return os.path.join(ABSOLUTE_PATH, path)
+
+def path_exists (path : str) -> bool:
+    abs_path = get_abs_path(path)
+    return os.path.exists(abs_path)
+
+def get_gif_abs_path(path: str)-> str:
+    return os.path.join(ABSOLUTE_PATH, "GIFS", path)
+
+def gif_path_exists(path: str) -> bool:
+    return path_exists(os.path.join("GIFS", path))
+
+def get_image_abs_path(path: str)-> str:
+    return os.path.join(ABSOLUTE_PATH, "IMAGES", path)
+
+def image_path_exists(path: str) -> bool:
+    return path_exists(os.path.join("IMAGES", path))
+
+
+def empty_image() -> np.ndarray:
+    img = np.zeros((64,64,4), dtype=np.uint8)
+    img[...,3] = 255
+    return img

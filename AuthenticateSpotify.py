@@ -1,14 +1,14 @@
 import requests
-from pathlib import Path
+import os
 from dataclasses import dataclass
 import json
 from datetime import datetime
 import secrets
 import urllib.parse
-import webbrowser
 from SpotifyCallBackServer import CallbackHandler
 import base64
 import sys
+from ImageLoader import path_exists, get_abs_path
 
 @dataclass
 class Tokens:
@@ -25,7 +25,8 @@ class TokenAliveTime:
 
 # Load the token from the json file
 print("Loading Spotify API Keys")
-with open(Path("SpotifyTokens/APIKeys.json"), 'r') as file:
+path = get_abs_path(os.path.join("SpotifyTokens", "APIKeys.json"))
+with open(path, 'r') as file:
     data = json.load(file)
     client_id = data["ClientID"]
     client_secret = data["ClientSecret"]
@@ -119,7 +120,8 @@ cache_data = {
     "AliveTime": alive_time
 }
 
-with open("SpotifyTokens/TokenCache.json", 'w', encoding='utf-8') as file:
+path = get_abs_path(os.path.join("SpotifyTokens", "TokenCache.json"))
+with open(path, 'w', encoding='utf-8') as file:
     json.dump(cache_data, file, indent=4)
 
-print("Successfully saved tokens to SpotifyTokens/TokenCache.json")
+print(f"Successfully saved tokens to {path}")

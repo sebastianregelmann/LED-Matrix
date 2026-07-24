@@ -4,14 +4,12 @@ import numpy as np
 from PIL import Image, ImageSequence
 from ImageDriver import ImageDriver
 import threading
-import os
-from ImageLoader import load_gif_missing
+from ImageLoader import load_gif_missing, gif_path_exists, get_gif_abs_path, empty_image
 
 class GifImageDriver(ImageDriver): 
     frame_thread : threading.Thread
     stop_event : threading.Event
     gif_name : str
-    gif_path : Path
     frames :np.ndarray
     frame_index : int
     last_update : float
@@ -28,25 +26,27 @@ class GifImageDriver(ImageDriver):
         self.lock = threading.Lock()
         self.stop_event = threading.Event()
 
-        #convert name into path
+        # save the name
         self.gif_name = gif_name
-        self.gif_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GIFS", gif_name)
+
+        print(f"[GIF IMAGE DRIVER] GIF image driver ready to start")
 
 
     def load_gif_frames(self) -> bool: 
         try:
             #check if path is valid
             #TODO Fix path issues
-            if os.path.exists(self.gif_path) == False:
+            if gif_path_exists(self.gif_name) == False:
                 img = load_gif_missing()
                 img = self.ensure_rgba(img)
                 with self.lock:
                     self.current_frame = img
-                print(f"[GIF IMAGE DRIVER] No GIF at Path: {self.gif_path}")
+                print(f"[GIF IMAGE DRIVER] No GIF at Path: {get_gif_abs_path(self.gif_name)}")
                 return False
         
             #load the gif frames
-            gif = Image.open(self.gif_path)
+            path = get_gif_abs_path(self.gif_name)
+            gif = Image.open(path)
             generated_frames = []
             total_duration_ms = 0
 
@@ -77,14 +77,13 @@ class GifImageDriver(ImageDriver):
             else:
                 self.duration = 10.0
 
-            print(f"[GIF IMAGE DRIVER] Create Animation from {self.gif_path}")
+            print(f"[GIF IMAGE DRIVER] Create Animation from {get_gif_abs_path(self.gif_name)}")
             return True
         
         except Exception as e:
             print(f"[GIF IMAGE DRIVER] Error loading gif: {e}")
             with self.lock:
-                self.current_frame = np.zeros((64,4,4), dtype=np.uint8)
-                self.current_frame[...,3] = 255
+                self.current_frame = empty_image()
             return False
 
 
@@ -107,8 +106,7 @@ class GifImageDriver(ImageDriver):
         except Exception as e:
             print(f"[GIF IMAGE DRIVER] Error in frame thread: {e}")
             with self.lock:
-                self.current_frame = np.zeros((64,4,4), dtype=np.uint8)
-                self.current_frame[...,3] = 255               
+                self.current_frame = empty_image()         
         print("[GIF IMAGE DRIVER] Stopped Frame Loop")
 
 
@@ -120,17 +118,13 @@ class GifImageDriver(ImageDriver):
         try:
             self.frame_thread.join()
         except Exception:
-            pass
-
-        self.active = False
-        
+            pass        
 
     def start_image_driver(self):
         print("[GIF IMAGE DRIVER] Starting the gif image driver")
         
         #load the gif
         if self.load_gif_frames() == False:
-            self.active = True
             return
 
         #set initial variables
@@ -142,7 +136,6 @@ class GifImageDriver(ImageDriver):
         self.frame_thread = threading.Thread(target=self.update_frame_loop)
 
         #start own thread for updating frames
-        self.active = True
         self.frame_thread.start()
 
 
@@ -158,7 +151,5 @@ class GifImageDriver(ImageDriver):
         
         #convert name into path
         self.gif_name = new_gif
-        self.gif_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GIFS", new_gif)
-
         self.start_image_driver()
 

@@ -6,7 +6,7 @@ from enum import Enum
 from SpotifyClient import Client, PlaybackInfo
 from ImageDriver import ImageDriver
 import copy
-
+from ImageLoader import empty_image
 
 class DisplayMode(Enum):
     DISC = 1,
@@ -58,6 +58,8 @@ class SpotifyImageDriver(ImageDriver):
         self.spotify_client = Client(request_timeout)
         self.display_mode = display_mode
 
+        print("[SPOTIFY IMAGE DRIVER] Spotify Image Driver ready")
+
 
     def start_image_driver(self):
         print("[SPOTIFY IMAGE DRIVER] Starting the spotify image driver")
@@ -78,7 +80,6 @@ class SpotifyImageDriver(ImageDriver):
         self.frame_thread = threading.Thread(target=self.update_frame_loop)
 
         #start own thread for updating frames
-        self.active = True
         self.frame_thread.start()
 
 
@@ -181,8 +182,7 @@ class SpotifyImageDriver(ImageDriver):
         except Exception as e:
             print(f"[SPOTIFY IMAGE DRIVER] Error in frame thread: f{e}")
             with self.lock:
-                self.current_frame = np.zeros((64,64,4), dtype=np.uint8)
-                self.current_frame[...,3] = 255
+                self.current_frame = empty_image()
 
         print("[SPOTIFY IMAGE DRIVER] Stopped Frame Loop")
 
@@ -270,8 +270,7 @@ class SpotifyImageDriver(ImageDriver):
         padded_fg[..., :3] *= weights
 
         # 5. Create the solid black 64x64 canvas
-        canvas = np.zeros((64, 64, 4), dtype=np.uint8)
-        canvas[..., 3] = 255  # Solid opaque alpha background
+        canvas = empty_image()
         canvas[1:59, 3:61] = padded_fg.astype(np.uint8)
 
         return canvas
@@ -441,8 +440,6 @@ class SpotifyImageDriver(ImageDriver):
             self.frame_thread.join()
         except Exception:
             pass
-        
-        self.active = False
 
 
     def get_current_frame(self)->np.ndarray:

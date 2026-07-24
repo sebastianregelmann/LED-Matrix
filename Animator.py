@@ -7,6 +7,8 @@ import random
 import cv2
 from enum import Enum
 import os
+from ImageLoader import get_abs_path, path_exists, empty_image
+
 
 class AnimationMode(Enum):
     NONE = 1,
@@ -48,8 +50,7 @@ class Animator(ABC):
         self.animation_settings = animation_settings
         self.hue = 0
         self.saturation = 0.5
-        self.frame = np.zeros((64,64,4), dtype=np.uint8)
-        self.frame[...,3] = 255
+        self.frame = empty_image()
 
     def change_animation_settings(self, animation_settings : AnimationSettings):
         self.animation_settings = animation_settings
@@ -114,7 +115,7 @@ class Rain(Animator):
                 ]
             ) 
 
-        self.mask = np.zeros((64,64,4), dtype=np.uint8)
+        self.mask = emp
 
 
     def get_next_frame(self) -> np.ndarray:
@@ -470,10 +471,8 @@ class Starfield(Animator):
 
     def get_next_frame(self):
         # Deep night background
-        mask = np.zeros((64, 64, 4), dtype=np.uint8)
-        mask[..., 3] = 255
-        lights = np.zeros((64, 64, 4))
-        lights[..., 3] = 255
+        mask = empty_image()
+        lights = empty_image()
 
         for i in range(self.num_stars):
             #check fade direction and fade brightness
@@ -517,8 +516,14 @@ class SlowClock(Animator):
         super().__init__(animation_settings)
 
         # Load the font
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Fonts", "Sono-VariableFont_MONO,wght.ttf")
-        self.font = ImageFont.truetype(path, size=20)
+        try:
+            if path_exists("Fonts/Sono-VariableFont_MONO,wght.ttf"):
+                path = get_abs_path("Fonts/Sono-VariableFont_MONO,wght.ttf")
+                self.font = ImageFont.truetype(path, size=20)
+            else:
+                self.font = ImageFont.load_default(20)
+        except Exception:
+            self.font = ImageFont.load_default(20)
 
 
     def draw_centered_text(self, draw:ImageDraw.Draw, text:str, rect:tuple):

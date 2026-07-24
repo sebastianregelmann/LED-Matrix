@@ -3,7 +3,6 @@ from StaticImageDrive import StaticImageDriver
 from GifImageDriver import GifImageDriver
 from AnimationImageDriver import AnimationImageDriver, AnimationMode, AnimationSettings
 from SpotifyImageDriver import SpotifyImageDriver, DisplayMode
-from pathlib import Path
 import json
 import time
 import threading

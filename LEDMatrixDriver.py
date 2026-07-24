@@ -1,6 +1,7 @@
 import numpy as np
 import time
 from PIL import Image
+from ImageLoader import empty_image
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 class LEDMatrixDriver():
@@ -16,8 +17,7 @@ class LEDMatrixDriver():
         self.active = False
         
         # Frame initialized as RGBA (64, 64, 4) to match incoming format
-        self.frame = np.zeros((64, 64, 4), dtype=np.uint8)
-        self.frame[..., 3] = 255
+        self.frame = empty_image()
         
         self.brightness = max(0, min(255, brightness))
         self.matrix = None
@@ -31,7 +31,7 @@ class LEDMatrixDriver():
         options.cols = 64
         options.chain_length = 1
         options.parallel = 1
-        
+        options.drop_privileges = False 
         options.hardware_mapping = 'regular'
         
         # Prevent Pi 3 / Zero speed flickering
@@ -41,6 +41,7 @@ class LEDMatrixDriver():
         self.matrix.brightness = self.brightness
         
         self.canvas = self.matrix.CreateFrameCanvas()
+        print("[LED-MATRIX DRIVER] Driver is now Active")
 
     def update_led_matrix_frame(self):
         if not self.active or self.matrix is None:
