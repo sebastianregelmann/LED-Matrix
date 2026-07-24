@@ -86,8 +86,8 @@ class FrameDriver():
 
     def initialize_default(self):
         self.led_driver = LEDMatrixDriver(127)
-        self.static_image_driver = StaticImageDriver("LastImageDriver")
-        self.gif_image_driver = GifImageDriver("LastGifName")
+        self.static_image_driver = StaticImageDriver("Test.png")
+        self.gif_image_driver = GifImageDriver("Test.gif")
         self.animation_image_driver = AnimationImageDriver(
             AnimationMode.NONE, AnimationSettings(False, 255, 0, 0, 0.5, 0.001)
         )
