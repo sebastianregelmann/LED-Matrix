@@ -40,7 +40,7 @@ class FrameDriver():
         update_rate = 1 / 90  # ~0.01333 seconds (13.3ms)
         last_update = time.perf_counter()
 
-        print["[FRAME DRIVER] Starting Matrix Update Loop Now"]
+        print("[FRAME DRIVER] Starting Matrix Update Loop Now")
         while True:
             try:
                 # 1. Check if mode changed
