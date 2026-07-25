@@ -11,12 +11,6 @@ import os
 from MQTTClient import MQTTClient
 from ImageLoader import get_abs_path, path_exists
 
-from enum import Enum
-
-class MODE(Enum):
-    HTTP = 1
-    MQTT = 2
-
 
 class FrameDriver():
     current_image_driver: ImageDriver = None

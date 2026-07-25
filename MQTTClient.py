@@ -1,6 +1,5 @@
 import time
 import paho.mqtt.client as mqtt
-from FrameDriver import FrameDriver
 import json
 
 class MQTTClient():
@@ -8,9 +7,9 @@ class MQTTClient():
     topic : str
     broker_address : str
     broker_port : int
-    frame_driver : FrameDriver
+    frame_driver : object
 
-    def __init__(self, frame_driver : FrameDriver, topic : str, broker_address : str,broker_port : int):
+    def __init__(self, frame_driver : object, topic : str, broker_address : str,broker_port : int):
         self.frame_driver = frame_driver
         self.topic = topic
         self.broker_address = broker_address

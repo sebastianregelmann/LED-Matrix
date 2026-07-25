@@ -1,4 +1,4 @@
-from FrameDriver import FrameDriver, MODE
+from FrameDriver import FrameDriver
 from http.server import ThreadingHTTPServer
 from LEDMatrixServer import SimpleHandler
 import threading
@@ -7,6 +7,11 @@ import argparse
 from MQTTClient import MQTTClient
 #import cv2 
 
+from enum import Enum
+
+class MODE(Enum):
+    HTTP = 1
+    MQTT = 2
 
 # Thread to run the server
 def run_server(frame_driver: FrameDriver, port=8000):
@@ -52,7 +57,7 @@ if __name__ == "__main__":
 
     # Start the MQTT Client
     mqtt_client = MQTTClient(frame_driver, "/rgbmatrix", "TODO", 1883)
-    
+
 
 
     #Start HTTP Server
