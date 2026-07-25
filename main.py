@@ -33,8 +33,8 @@ if __name__ == "__main__":
 
     # 2. Add the flag (action="store_true" means if it's present, it's True; otherwise, False)
     parser.add_argument("--save-status", action="store_true", help="Enable status saving")
-    parser.add_argument("--disabel-http", action="store_true", help="Disables the http server")
-    parser.add_argument("--disabel-mqtt", action="store_true", help="Disables the mqtt client")
+    parser.add_argument("--disable-http", action="store_true", help="Disables the http server")
+    parser.add_argument("--disable-mqtt", action="store_true", help="Disables the mqtt client")
 
     # 3. Parse arguments
     args = parser.parse_args()
