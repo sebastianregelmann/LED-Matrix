@@ -53,7 +53,7 @@ class MQTTClient():
             print(f"[MQTT CLIENT] Connection failed with code {reason_code}")
 
     def on_message(self, client, userdata, msg):
-        print(f"[MQTT CLIENT] Received message -> topic_listen: {msg.topic_listen}")
+        print(f"[MQTT CLIENT] Received message -> topic_listen: {msg.topic}")
         try:
             payload_str = msg.payload.decode('utf-8')
             data_dict = json.loads(payload_str)
