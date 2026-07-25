@@ -1,10 +1,10 @@
-from FrameDriver import FrameDriver
+from FrameDriver import FrameDriver, MODE
 from http.server import ThreadingHTTPServer
 from LEDMatrixServer import SimpleHandler
 import threading
 import time
 import argparse
-
+from MQTTClient import MQTTClient
 #import cv2 
 
 
@@ -50,9 +50,14 @@ if __name__ == "__main__":
     #led_driver = LEDMatrixDriver(127)
     frame_driver = FrameDriver(save_status)
 
+    # Start the MQTT Client
+    mqtt_client = MQTTClient(frame_driver, "/rgbmatrix", "TODO", 1883)
+    
+
+
     #Start HTTP Server
-    server_thread = threading.Thread(target=run_server, args=(frame_driver, 8000), daemon=True)
-    server_thread.start()
+    #server_thread = threading.Thread(target=run_server, args=(frame_driver, 8000), daemon=True)
+    #server_thread.start()
     
     # Start the GUI thread BEFORE starting the server
     #threading.Thread(target=gui_loop,args=(frame_driver,), daemon=True).start()

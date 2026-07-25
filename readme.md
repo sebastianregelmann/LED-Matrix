@@ -1,16 +1,28 @@
 # Installation
-1. Clone
+move into home directory
+1. Clone Repository
+2. Change directory
 2. Create venv
+4. activate venv
 3. install requirements
+
+## install rgb matrix library
+1. move into home directory
+2. install dependecies
+sudo apt-get install -y python3.13-dev python3-dev build-essential python3-pil
+
+
 
 
 4. Install rgb matrix
 5. pip3 install rgbmatrix
 
+
+
 sudo apt-get update
 sudo apt-get install -y build-essential python3-dev cython3cd 
-sudo apt-get install -y python3.13-dev python3-dev build-essential
-sudo apt-get install python3-pil
+sudo apt-get install -y python3.13-dev python3-dev build-essential python3-pil
+sudo apt-get install 
 git clone https://github.com/hzeller/rpi-rgb-led-matrix.git
 cd ~/rpi-rgb-led-matrix
 source /home/pi/LED-Matrix/venv/bin/activate

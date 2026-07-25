@@ -8,7 +8,15 @@ import time
 import threading
 from LEDMatrixDriver import LEDMatrixDriver
 import os
+from MQTTClient import MQTTClient
 from ImageLoader import get_abs_path, path_exists
+
+from enum import Enum
+
+class MODE(Enum):
+    HTTP = 1
+    MQTT = 2
+
 
 class FrameDriver():
     current_image_driver: ImageDriver = None
@@ -25,7 +33,9 @@ class FrameDriver():
 
     save_status_to_cache: bool
 
-    def __init__(self, save_status_to_cache:bool = False):
+    mqtt_client : MQTTClient
+
+    def __init__(self,save_status_to_cache:bool = False):
         self.lock = threading.Lock()
         self.save_status_to_cache = save_status_to_cache
 
@@ -37,6 +47,8 @@ class FrameDriver():
             self.initialize_default()
         print("[FRAME DRIVER] Frame driver is Ready")
         self.save_status_cache()
+
+        self.mqtt_client =None
 
         thread = threading.Thread(target=self.update_loop, daemon=True)
         thread.start()
@@ -173,6 +185,7 @@ class FrameDriver():
 
             if not enabled:
                 self._save_status_cache_unlocked()
+                self.publish_mqtt_message()
                 return
 
             image_enabled = data.get("ImageMode", {}).get("Enabled", False)
@@ -204,6 +217,8 @@ class FrameDriver():
 
             print("[FRAME DRIVER] Handled Mode Change Request")
             self._save_status_cache_unlocked()
+
+            self.publish_mqtt_message()
 
     def change_led_matrix_settings(self, enabled: bool, brightness: int):
         if not enabled:
@@ -352,3 +367,13 @@ class FrameDriver():
         """Public method for cache saving."""
         with self.lock:
             self._save_status_cache_unlocked()
+
+
+    def set_mqtt_client(self, client:MQTTClient):
+        with self.lock:
+            self.mqtt_client = client
+            self.publish_mqtt_message()
+
+    def publish_mqtt_message(self):
+        if self.mqtt_client is not None:
+            self.mqtt_client.publish_status_message()
