@@ -8,24 +8,32 @@ class MQTTClient():
     broker_address : str
     broker_port : int
     frame_driver : object
+    username : str
+    password : str
 
-    def __init__(self, frame_driver : object, topic : str, broker_address : str,broker_port : int):
+    def __init__(self, frame_driver : object, topic : str, broker_address : str,broker_port : int, username: str, password: str):
         self.frame_driver = frame_driver
         self.topic = topic
         self.broker_address = broker_address
         self.broker_port = broker_port
+        self.username = username
+        self.password = password
 
         self.init_mqqt_client()
 
 
-    def init_mqqt_client(self):
+    def init_mqqt_client(self,):
         self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+
+        # 1. Set username and password if provided
+        if self.username and self.password:
+            self.client.username_pw_set(self.username, self.password)
 
         # Assign callbacks
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
 
-        #connect to broker
+        # Connect to broker
         self.client.connect(self.broker_address, self.broker_port, keepalive=60)
 
         # Start the background thread network loop
