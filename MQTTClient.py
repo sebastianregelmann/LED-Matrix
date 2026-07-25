@@ -53,10 +53,9 @@ class MQTTClient():
             print(f"[MQTT CLIENT] Failed to handle mode change Error: {e} ")
 
 
-    def publish_status_message(self):
+    def publish_message(self, message:dict):
         try: 
-            data_dict = self.frame_driver.current_status()
-            self.client.publish(self.topic, json.dumps(data_dict))            
+            self.client.publish(self.topic + "/status", json.dumps(message))            
             print("[MQTT CLIENT] Published Status")
         except Exception as e:
-            print(f"[MQTT CLIENT] Failed to publish data Error: {e} ")
+            print(f"[MQTT CLIENT] Failed to publish Status Error: {e} ")

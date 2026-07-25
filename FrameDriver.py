@@ -30,7 +30,7 @@ class FrameDriver():
     mqtt_client : MQTTClient
 
     def __init__(self,save_status_to_cache:bool = False):
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
         self.save_status_to_cache = save_status_to_cache
 
         # load the last cached settings
@@ -39,6 +39,7 @@ class FrameDriver():
                 self.initialize_default()
         else:
             self.initialize_default()
+        
         print("[FRAME DRIVER] Frame driver is Ready")
         self.save_status_cache()
 
@@ -211,7 +212,6 @@ class FrameDriver():
 
             print("[FRAME DRIVER] Handled Mode Change Request")
             self._save_status_cache_unlocked()
-
             self.publish_mqtt_message()
 
     def change_led_matrix_settings(self, enabled: bool, brightness: int):
@@ -370,4 +370,5 @@ class FrameDriver():
 
     def publish_mqtt_message(self):
         if self.mqtt_client is not None:
-            self.mqtt_client.publish_status_message()
+            message = self._build_status_dict()
+            self.mqtt_client.publish_message(message)
