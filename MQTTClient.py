@@ -4,16 +4,18 @@ import json
 
 class MQTTClient():
     client: mqtt.Client
-    topic : str
+    topic_listen : str
+    topic_publish : str
     broker_address : str
     broker_port : int
     frame_driver : object
     username : str
     password : str
 
-    def __init__(self, frame_driver : object, topic : str, broker_address : str,broker_port : int, username: str, password: str):
+    def __init__(self, frame_driver : object, topic_listen : str, topic_publish : str, broker_address : str,broker_port : int, username: str, password: str):
         self.frame_driver = frame_driver
-        self.topic = topic
+        self.topic_listen = topic_listen
+        self.topic_publish = topic_publish
         self.broker_address = broker_address
         self.broker_port = broker_port
         self.username = username
@@ -45,13 +47,13 @@ class MQTTClient():
         if reason_code == 0:
             print("[MQTT CLIENT] Connected successfully to broker!")
             # Subscribe to topics inside on_connect to ensure re-subscriptions 
-            self.client.subscribe(self.topic, qos=1)
+            self.client.subscribe(self.topic_listen, qos=1)
             self.frame_driver.set_mqtt_client(self)
         else:
             print(f"[MQTT CLIENT] Connection failed with code {reason_code}")
 
     def on_message(self, client, userdata, msg):
-        print(f"[MQTT CLIENT] Received message -> Topic: {msg.topic}")
+        print(f"[MQTT CLIENT] Received message -> topic_listen: {msg.topic_listen}")
         try:
             payload_str = msg.payload.decode('utf-8')
             data_dict = json.loads(payload_str)
@@ -63,7 +65,7 @@ class MQTTClient():
 
     def publish_message(self, message:dict):
         try: 
-            self.client.publish(self.topic + "/status", json.dumps(message))            
+            self.client.publish(self.topic_publish, json.dumps(message))            
             print("[MQTT CLIENT] Published Status")
         except Exception as e:
             print(f"[MQTT CLIENT] Failed to publish Status Error: {e} ")

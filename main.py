@@ -11,7 +11,9 @@ HTTP_PORT = 8000  #send mode changes as json POST to http://ip:port/changemode r
 
 MQTT_ADDRESS = "ip address"
 MQTT_PORT = 1883
-MQTT_TOPIC = "/rgbmatrix" #Send mode changes as json to /rgbmatrix receive status at /rgbmatrix/status
+MQTT_TOPIC_LISTEN = "homeassistant/rgbmatrix/update" #Send mode changes as json to this topic
+MQTT_TOPIC_PUBLISH = "homeassistant/rgbmatrix/status" # publishes stauts to this topic
+
 MQTT_USER = None
 MQTT_PWD = None
 # Format of Staus Json in StatusCache/Status.json
@@ -54,7 +56,7 @@ if __name__ == "__main__":
 
     if args.disable_mqtt == False:
         # Start the MQTT Client
-        mqtt_client = MQTTClient(frame_driver, MQTT_TOPIC, MQTT_ADDRESS, MQTT_PORT, MQTT_USER, MQTT_PWD)
+        mqtt_client = MQTTClient(frame_driver, MQTT_TOPIC_LISTEN, MQTT_TOPIC_PUBLISH, MQTT_ADDRESS, MQTT_PORT, MQTT_USER, MQTT_PWD)
 
     #keep alive
     while True:
