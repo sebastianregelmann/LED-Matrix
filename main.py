@@ -65,3 +65,8 @@ if __name__ == "__main__":
 
 
 
+
+#TODO Range for Brightness
+#TODO 1.5 Seconds MQTT Status Updates
+# TODO Plasma Animation Speed
+# TODO FIX Drifting Fog Naming
