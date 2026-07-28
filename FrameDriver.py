@@ -92,7 +92,7 @@ class FrameDriver():
                 last_update = time.perf_counter()
 
     def initialize_default(self):
-        self.led_driver = LEDMatrixDriver(127)
+        self.led_driver = LEDMatrixDriver(100)
         self.static_image_driver = StaticImageDriver("Test.png")
         self.gif_image_driver = GifImageDriver("Test.gif")
         self.animation_image_driver = AnimationImageDriver(
@@ -110,7 +110,7 @@ class FrameDriver():
         with open(path, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
-            brightness = data.get("Brightness", 127)
+            brightness = data.get("Brightness", 100)
             self.led_driver = LEDMatrixDriver(brightness)
 
             image_mode_image = data.get("ImageMode", {}).get("Image", "LastImageName.png")
@@ -145,7 +145,7 @@ class FrameDriver():
             case "FIRE": return AnimationMode.FIRE
             case "PLASMA": return AnimationMode.PLASMA
             case "LAVALAMP": return AnimationMode.LAVALAMP
-            case "DRIFTING_FOG": return AnimationMode.DRIFITNG_FOG
+            case "DRIFTING_FOG": return AnimationMode.DRIFTING_FOG
             case "STARFIELD": return AnimationMode.STARFIELD
             case "CLOCK": return AnimationMode.CLOCK
             case _: return AnimationMode.NONE
@@ -175,7 +175,7 @@ class FrameDriver():
             data = new_mode
 
             enabled = data.get("Enabled", False)
-            brightness = data.get("Brightness", 127)
+            brightness = data.get("Brightness", 100)
             self.change_led_matrix_settings(enabled, brightness)
 
             if not enabled:
@@ -299,11 +299,15 @@ class FrameDriver():
             if self.spotify_image_driver.display_mode != display_mode:
                 self.spotify_image_driver.change_mode(display_mode)
 
+                #wait for mode change
+                while self.spotify_image_driver.display_mode != display_mode:
+                    time.sleep(0.001)
+
     def _build_status_dict(self) -> dict:
         """Internal helper to safely construct status dict without holding lock."""
         return {
             "Enabled": self.led_driver.active if self.led_driver else False,
-            "Brightness": self.led_driver.brightness if self.led_driver else 127,
+            "Brightness": self.led_driver.brightness if self.led_driver else 100,
             "ImageMode": {
                 "Enabled": isinstance(self.current_image_driver, StaticImageDriver),
                 "Image": self.static_image_driver.image_name if self.static_image_driver else ""

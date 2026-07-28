@@ -16,7 +16,7 @@ class AnimationMode(Enum):
     FIRE = 3
     PLASMA =4
     LAVALAMP = 5
-    DRIFITNG_FOG = 6
+    DRIFTING_FOG = 6
     STARFIELD = 7
     CLOCK = 8
 
@@ -322,7 +322,7 @@ class LavaLamp(Animator):
         self.t += self.size_speed * self.animation_settings.animation_speed
 
         # Vectorized boundary bounce
-        self.centers += self.speeds
+        self.centers += self.speeds * self.animation_settings.animation_speed
         
         # Identify out-of-bounds indices and flip speeds
         mask_out = (self.centers < 0) | (self.centers > [64, 64])

@@ -47,7 +47,6 @@ if __name__ == "__main__":
     if args.save_status:
         save_status = True
 
-    #led_driver = LEDMatrixDriver(127)
     frame_driver = FrameDriver(save_status)
 
     if args.disable_http == False:
@@ -65,8 +64,8 @@ if __name__ == "__main__":
 
 
 
-
-#TODO Range for Brightness
 #TODO 1.5 Seconds MQTT Status Updates
-# TODO Plasma Animation Speed
+
+# TODO Lavalamp Animation Speed
+
 # TODO FIX Drifting Fog Naming

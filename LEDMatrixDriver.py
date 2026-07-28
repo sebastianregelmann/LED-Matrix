@@ -19,7 +19,7 @@ class LEDMatrixDriver():
         # Frame initialized as RGBA (64, 64, 4) to match incoming format
         self.frame = empty_image()
         
-        self.brightness = max(0, min(255, brightness))
+        self.brightness = max(0, min(100, brightness))
         self.matrix = None
         self.canvas = None
         
@@ -73,7 +73,7 @@ class LEDMatrixDriver():
             self.matrix.Clear()
 
     def update_brightness(self, brightness: int):
-        new_brightness = max(0, min(255, brightness))
+        new_brightness = max(0, min(100, brightness))
         if self.brightness != new_brightness:
             self.brightness = new_brightness
             self.update_led_matrix_brightness()

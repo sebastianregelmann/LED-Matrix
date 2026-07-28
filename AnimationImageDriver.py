@@ -48,7 +48,7 @@ class AnimationImageDriver(ImageDriver):
                         self.animator = Plasma(self.animation_settings)
                     case AnimationMode.LAVALAMP:
                         self.animator = LavaLamp(self.animation_settings)
-                    case AnimationMode.DRIFITNG_FOG:
+                    case AnimationMode.DRIFTING_FOG:
                         self.animator = DriftingFog(self.animation_settings)
                     case AnimationMode.STARFIELD:
                         self.animator = Starfield(self.animation_settings)

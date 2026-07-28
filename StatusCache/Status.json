@@ -1,6 +1,6 @@
 {
     "Enabled": false,
-    "Brightness": 127,
+    "Brightness": 100,
     "ImageMode": {
         "Enabled": false,
         "Image": "Test.png"
