@@ -1,0 +1,252 @@
+views:
+  - type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: RGB-Matrix
+            heading_style: title
+            grid_options:
+              rows: auto
+              columns: 3
+          - type: tile
+            grid_options:
+              columns: 12
+              rows: 2
+            entity: input_boolean.rgb_matrix_power_helper
+            name: RGB-Matrix Power
+            vertical: false
+            features:
+              - type: toggle
+            features_position: bottom
+          - type: tile
+            entity: input_number.rgb_matrix_brightness_helper
+            features:
+              - type: numeric-input
+            grid_options:
+              columns: 12
+              rows: 2
+            name: Brightness
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+          - type: tile
+            grid_options:
+              columns: 12
+              rows: 2
+            entity: input_boolean.rgb_matrix_image_mode_enabled_helper
+            vertical: false
+            features:
+              - type: toggle
+            features_position: inline
+            name: Image Mode
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_gif_mode_enabled_helper
+                state: "off"
+              - condition: state
+                entity: input_boolean.rgb_matrix_animation_mode_enabled_helper
+                state: "off"
+              - condition: state
+                entity: input_boolean.rgb_matrix_spotify_mode_enabled_helper
+                state: "off"
+          - type: tile
+            grid_options:
+              columns: 12
+              rows: 1
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_image_mode_enabled_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+            entity: input_select.rgb_matrix_image_selection_helper
+            vertical: false
+            features:
+              - type: select-options
+            features_position: inline
+            name: Image
+          - type: tile
+            grid_options:
+              columns: 12
+              rows: 2
+            entity: input_boolean.rgb_matrix_gif_mode_enabled_helper
+            vertical: false
+            features:
+              - type: toggle
+            features_position: inline
+            name: GIF Mode
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_image_mode_enabled_helper
+                state: "off"
+              - condition: state
+                entity: input_boolean.rgb_matrix_animation_mode_enabled_helper
+                state: "off"
+              - condition: state
+                entity: input_boolean.rgb_matrix_spotify_mode_enabled_helper
+                state: "off"
+          - type: tile
+            grid_options:
+              columns: 12
+              rows: 1
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_gif_mode_enabled_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+            entity: input_select.rgb_matrix_gif_selection_helper
+            vertical: false
+            features:
+              - type: select-options
+            features_position: inline
+            name: GIF
+          - type: tile
+            grid_options:
+              columns: full
+              rows: 2
+            entity: input_boolean.rgb_matrix_animation_mode_enabled_helper
+            vertical: false
+            features:
+              - type: toggle
+            features_position: inline
+            name: Animation Mode
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_image_mode_enabled_helper
+                state: "off"
+              - condition: state
+                entity: input_boolean.rgb_matrix_gif_mode_enabled_helper
+                state: "off"
+              - condition: state
+                entity: input_boolean.rgb_matrix_spotify_mode_enabled_helper
+                state: "off"
+          - type: tile
+            entity: input_select.rgb_matrix_animation_mode_selection_helper
+            vertical: false
+            features:
+              - type: select-options
+            features_position: inline
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_animation_mode_enabled_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+            name: Animation
+          - type: tile
+            grid_options:
+              columns: full
+            entity: >-
+              input_number.rgb_matrix_animation_mode_animation_speed_selection_helper
+            vertical: false
+            features:
+              - type: numeric-input
+            features_position: bottom
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_animation_mode_enabled_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+            name: Animation Speed
+          - type: tile
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_animation_mode_enabled_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+            entity: input_boolean.rgb_matrix_animation_mode_color_fade_enabled_helper
+            vertical: false
+            features:
+              - type: toggle
+            features_position: inline
+            name: Color Fade
+          - type: tile
+            grid_options:
+              columns: full
+            entity: >-
+              input_number.rgb_matrix_animation_mode_color_fade_speed_selection_helper
+            vertical: false
+            features:
+              - type: numeric-input
+            features_position: bottom
+            visibility:
+              - condition: state
+                entity: >-
+                  input_boolean.rgb_matrix_animation_mode_color_fade_enabled_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_animation_mode_enabled_helper
+                state: "on"
+            name: Fade Speed
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: input_boolean.rgb_matrix_animation_mode_enabled_helper
+                state: "on"
+              - condition: state
+                entity: >-
+                  input_boolean.rgb_matrix_animation_mode_color_fade_enabled_helper
+                state: "off"
+            card:
+              type: custom:input-color-card
+              entity: input_color.rgb_matrix_animation_mode_color_selection_helper
+              name: Color
+          - type: tile
+            grid_options:
+              columns: full
+              rows: 2
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_image_mode_enabled_helper
+                state: "off"
+              - condition: state
+                entity: input_boolean.rgb_matrix_animation_mode_enabled_helper
+                state: "off"
+              - condition: state
+                entity: input_boolean.rgb_matrix_gif_mode_enabled_helper
+                state: "off"
+            entity: input_boolean.rgb_matrix_spotify_mode_enabled_helper
+            name: Spotify Mode
+            vertical: false
+            features:
+              - type: toggle
+            features_position: inline
+          - type: tile
+            grid_options:
+              columns: full
+            entity: input_select.rgb_matrix_spotify_mode_selection_helper
+            vertical: false
+            features:
+              - type: select-options
+            features_position: inline
+            visibility:
+              - condition: state
+                entity: input_boolean.rgb_matrix_spotify_mode_enabled_helper
+                state: "on"
+              - condition: state
+                entity: input_boolean.rgb_matrix_power_helper
+                state: "on"
+            name: Style
+        column_span: 1

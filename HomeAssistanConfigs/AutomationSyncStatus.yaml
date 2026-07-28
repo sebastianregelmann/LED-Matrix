@@ -1,0 +1,115 @@
+alias: "RGB Matrix: Sync Helpers from Status"
+triggers:
+  - entity_id: sensor.rgb_matrix_status
+    trigger: state
+actions:
+  - target:
+      entity_id: input_boolean.rgb_matrix_power_helper
+    action: >-
+      input_boolean.turn_{{ 'on' if states('sensor.rgb_matrix_status') in
+      ['True', 'on'] else 'off' }}
+  - target:
+      entity_id: input_number.rgb_matrix_brightness_helper
+    data:
+      value: "{{ state_attr('sensor.rgb_matrix_status', 'Brightness') | float(127) }}"
+    action: input_number.set_value
+  - target:
+      entity_id: input_boolean.rgb_matrix_image_mode_enabled_helper
+    action: >-
+      input_boolean.turn_{{ 'on' if state_attr('sensor.rgb_matrix_status',
+      'ImageMode').get('Enabled', false) else 'off' }}
+  - target:
+      entity_id: input_select.rgb_matrix_image_selection_helper
+    data:
+      option: >
+        {% set target_image = state_attr('sensor.rgb_matrix_status',
+        'ImageMode').get('Image', 'Test.png') %} {% set options =
+        state_attr('input_select.rgb_matrix_image_selection_helper', 'options')
+        | default([]) %} {{target_image if target_image in options else
+        'Test.png' -}}
+    action: input_select.select_option
+  - target:
+      entity_id: input_boolean.rgb_matrix_gif_mode_enabled_helper
+    action: >-
+      input_boolean.turn_{{ 'on' if state_attr('sensor.rgb_matrix_status',
+      'GifMode').get('Enabled', false) else 'off' }}
+  - target:
+      entity_id: input_select.rgb_matrix_gif_selection_helper
+    data:
+      option: >
+        {% set target_image = state_attr('sensor.rgb_matrix_status',
+        'GifMode').get('Gif', 'Test.gif') %} {% set options =
+        state_attr('input_select.rgb_matrix_gif_selection_helper', 'options') |
+        default([]) %} {{target_image if target_image in options else 'Test.gif'
+        -}}
+    action: input_select.select_option
+  - target:
+      entity_id: input_boolean.rgb_matrix_animation_mode_enabled_helper
+    action: >-
+      input_boolean.turn_{{ 'on' if state_attr('sensor.rgb_matrix_status',
+      'AnimationMode').get('Enabled', false) else 'off' }}
+  - target:
+      entity_id: input_select.rgb_matrix_animation_mode_selection_helper
+    data:
+      option: >
+        {% set target_image = state_attr('sensor.rgb_matrix_status',
+        'AnimationMode').get('Mode', 'NONE') %} {% set options =
+        state_attr('input_select.rgb_matrix_animation_mode_selection_helper',
+        'options') | default([]) %} {{target_image if target_image in options
+        else 'NONE' -}}
+    action: input_select.select_option
+  - target:
+      entity_id: input_boolean.rgb_matrix_animation_mode_color_fade_enabled_helper
+    action: >-
+      input_boolean.turn_{{ 'on' if state_attr('sensor.rgb_matrix_status',
+      'AnimationMode').get('AnimationSettings', "{}").get("ColorFade", false)
+      else 'off' }}
+  - target:
+      entity_id: input_color.rgb_matrix_animation_mode_color_selection_helper
+    data:
+      rgb_color:
+        - >-
+          {{ state_attr('sensor.rgb_matrix_status',
+          'AnimationMode').get('AnimationSettings', '{}').get('Red', 255) |
+          int(255) }}
+        - >-
+          {{ state_attr('sensor.rgb_matrix_status',
+          'AnimationMode').get('AnimationSettings', '{}').get('Green', 0) |
+          int(0) }}
+        - >-
+          {{ state_attr('sensor.rgb_matrix_status',
+          'AnimationMode').get('AnimationSettings', '{}').get('Blue', 0) |
+          int(0) }}
+    action: input_color.set_color
+  - target:
+      entity_id: input_number.rgb_matrix_animation_mode_animation_speed_selection_helper
+    data:
+      value: >-
+        {{ state_attr('sensor.rgb_matrix_status',
+        'AnimationMode').get('AnimationSettings', '{}').get('AnimationSpeed',
+        0.5) | float(0.5) }}
+    action: input_number.set_value
+  - target:
+      entity_id: input_number.rgb_matrix_animation_mode_color_fade_speed_selection_helper
+    data:
+      value: >-
+        {{ state_attr('sensor.rgb_matrix_status',
+        'AnimationMode').get('AnimationSettings', '{}').get('ColorFadeSpeed',
+        0.005) | float(0.005) }}
+    action: input_number.set_value
+  - target:
+      entity_id: input_boolean.rgb_matrix_spotify_mode_enabled_helper
+    action: >-
+      input_boolean.turn_{{ 'on' if state_attr('sensor.rgb_matrix_status',
+      'SpotifyMode').get('Enabled', false) else 'off' }}
+  - target:
+      entity_id: input_select.rgb_matrix_spotify_mode_selection_helper
+    data:
+      option: >
+        {% set target_image = state_attr('sensor.rgb_matrix_status',
+        'SpotifyMode').get('Mode', 'DISC') %} {% set options =
+        state_attr('input_select.rgb_matrix_spotify_mode_selection_helper',
+        'options') | default([]) %} {{target_image if target_image in options
+        else 'DISC' -}}
+    action: input_select.select_option
+mode: single

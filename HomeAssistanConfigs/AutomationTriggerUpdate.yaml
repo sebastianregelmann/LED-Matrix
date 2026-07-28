@@ -1,0 +1,66 @@
+alias: "RGB Matrix: Send MQTT Update"
+triggers:
+  - trigger: state
+    entity_id:
+      - input_boolean.rgb_matrix_power_helper
+      - input_number.rgb_matrix_brightness_helper
+      - input_boolean.rgb_matrix_image_mode_enabled_helper
+      - input_select.rgb_matrix_image_selection_helper
+      - input_boolean.rgb_matrix_gif_mode_enabled_helper
+      - input_select.rgb_matrix_gif_selection_helper
+      - input_boolean.rgb_matrix_animation_mode_enabled_helper
+      - input_select.rgb_matrix_animation_mode_selection_helper
+      - input_boolean.rgb_matrix_animation_mode_color_fade_enabled_helper
+      - input_number.rgb_matrix_animation_mode_animation_speed_selection_helper
+      - input_number.rgb_matrix_animation_mode_color_fade_speed_selection_helper
+      - input_boolean.rgb_matrix_spotify_mode_enabled_helper
+      - input_select.rgb_matrix_spotify_mode_selection_helper
+    id: general_helpers
+  - trigger: state
+    entity_id: input_color.rgb_matrix_animation_mode_color_selection_helper
+    for:
+      milliseconds: 300
+    id: color_helper
+conditions:
+  - condition: template
+    value_template: >-
+      {{ trigger.id != 'color_helper' or trigger.to_state.context.user_id is not
+      none }}
+actions:
+  - action: mqtt.publish
+    data:
+      topic: homeassistant/rgbmatrix/update
+      payload: >
+        {% set color =
+        state_attr('input_color.rgb_matrix_animation_mode_color_selection_helper',
+        'rgb_color') | default([255, 0, 0], true) %}
+
+        {
+          "Enabled": {{ is_state('input_boolean.rgb_matrix_power_helper', 'on') | to_json }},
+          "Brightness": {{ states('input_number.rgb_matrix_brightness_helper') | float(127) | int }},
+          "ImageMode": {
+            "Enabled": {{ is_state('input_boolean.rgb_matrix_image_mode_enabled_helper', 'on') | to_json }},
+            "Image": "{{ states('input_select.rgb_matrix_image_selection_helper') }}"
+          },
+          "GifMode": {
+            "Enabled": {{ is_state('input_boolean.rgb_matrix_gif_mode_enabled_helper', 'on') | to_json }},
+            "Gif": "{{ states('input_select.rgb_matrix_gif_selection_helper') }}"
+          },
+          "AnimationMode": {
+            "Enabled": {{ is_state('input_boolean.rgb_matrix_animation_mode_enabled_helper', 'on') | to_json }},
+            "Mode": "{{ states('input_select.rgb_matrix_animation_mode_selection_helper') }}",
+            "AnimationSettings": {
+              "ColorFade": {{ is_state('input_boolean.rgb_matrix_animation_mode_color_fade_enabled_helper', 'on') | to_json }},
+              "Red": {{ color[0] | int(255) }},
+              "Green": {{ color[1] | int(0) }},
+              "Blue": {{ color[2] | int(0) }},
+              "AnimationSpeed": {{ states('input_number.rgb_matrix_animation_mode_animation_speed_selection_helper') | float(0.5) }},
+              "ColorFadeSpeed": {{ states('input_number.rgb_matrix_animation_mode_color_fade_speed_selection_helper') | float(0.005) }}
+            }
+          },
+          "SpotifyMode": {
+            "Enabled": {{ is_state('input_boolean.rgb_matrix_spotify_mode_enabled_helper', 'on') | to_json }},
+            "Mode": "{{ states('input_select.rgb_matrix_spotify_mode_selection_helper') }}"
+          }
+        }
+mode: queued

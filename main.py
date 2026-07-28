@@ -5,7 +5,6 @@ import threading
 import time
 import argparse
 from MQTTClient import MQTTClient
-#import cv2 
 
 HTTP_PORT = 8000  #send mode changes as json POST to http://ip:port/changemode receive status as json GET from http://ip:port/status
 
