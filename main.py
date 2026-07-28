@@ -65,7 +65,3 @@ if __name__ == "__main__":
 
 
 #TODO 1.5 Seconds MQTT Status Updates
-
-# TODO Lavalamp Animation Speed
-
-# TODO FIX Drifting Fog Naming

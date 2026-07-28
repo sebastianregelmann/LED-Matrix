@@ -381,7 +381,7 @@ class DriftingFog(Animator):
 
 
     def get_next_frame(self):
-        self.t += 0.02 * self.animation_settings.animation_speed
+        self.t += 0.05 * self.animation_settings.animation_speed
 
         clouds_a = np.zeros((64,64))
         clouds_b = np.zeros((64,64))
@@ -389,7 +389,7 @@ class DriftingFog(Animator):
         for i in range(self.num_clouds):
 
             # Drift through the scene
-            self.centers[i] += self.speeds[i] * self.animation_settings.animation_speed
+            self.centers[i] += self.speeds[i]* 2 * self.animation_settings.animation_speed
 
             # Wrap around edges
             self.centers[i, 0] %= 64
