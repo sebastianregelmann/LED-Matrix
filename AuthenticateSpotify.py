@@ -104,7 +104,7 @@ print("Authentication successful")
 data = json.loads(response.text)
 access_token = data["access_token"]
 refresh_token = data["refresh_token"]
-time_stamp = datetime.now()
+time_stamp = datetime.now().astimezone()
 alive_time = data["expires_in"]
 print("New Refresh Token: ", refresh_token)
 print("New Access Token: ", access_token)

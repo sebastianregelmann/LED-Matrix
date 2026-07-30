@@ -558,7 +558,7 @@ class SlowClock(Animator):
 
 
     def get_next_frame(self):
-        time = datetime.now()
+        time = datetime.now().astimezone()
 
         # Render text
         img = Image.new("L", (64, 64), 0).convert("RGBA")

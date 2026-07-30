@@ -101,7 +101,7 @@ class Client():
         while not self.stop_event.is_set():    
             # Check if token needs refreshing
             if self.tokens and self.tokens.time_stamp:
-                time_dif = datetime.now() - self.tokens.time_stamp
+                time_dif = datetime.now().astimezone() - self.tokens.time_stamp
                 if time_dif.total_seconds() > (self.tokens.alive_time or 3600) - 60:
                     print("[SPOTIFY CLIENT] Access Token expiring, requesting new one...")
                     response = self.request_new_access_token()
@@ -235,7 +235,7 @@ class Client():
             data = response.json()
             if self.tokens:
                 self.tokens.access_token = data["access_token"]
-                self.tokens.time_stamp = datetime.now()
+                self.tokens.time_stamp = datetime.now().astimezone()
                 self.tokens.alive_time = data.get("expires_in", 3600)
 
                 if "refresh_token" in data:
